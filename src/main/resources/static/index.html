@@ -6,6 +6,21 @@
     <title>Welcome</title>
 </head>
 <body>
-<h1>Welcome to COMP367</h1>
+<h1 id="greeting"></h1>
+
+<script>
+    // Get the current hour
+    const currentHour = new Date().getHours();
+    const userName = "Ayowumi Adeyeye";
+
+    let greetingMessage = "";
+    if (currentHour < 12) {
+        greetingMessage = `Good morning, ${userName}, Welcome to COMP367`;
+    } else {
+        greetingMessage = `Good afternoon, ${userName}, Welcome to COMP367`;
+    }
+
+    document.getElementById("greeting").textContent = greetingMessage;
+</script>
 </body>
 </html>
