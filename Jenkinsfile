@@ -3,32 +3,53 @@ pipeline {
     tools {
         maven 'Maven'
     }
-    stages {
+    environment {
+        DOCKER_HUB_CREDS = credentials('docker-hub-credentials')
+        DOCKER_IMAGE = "hayowumy/comp367lab2:${BUILD_NUMBER}"
+        DOCKER_HUB_CREDS_USR = 'hayowumy'
+    }
 
+    stages {
         stage('Checkout') {
             steps {
-                // Grab source from Git
+                // Checkout code from GitHub repository
                 checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Build Maven Project') {
             steps {
-                // Build with Maven
-                sh "mvn clean package"
+                // Build the Maven project
+                sh 'mvn clean package'
             }
         }
 
-        stage('Test') {
+        stage('Docker Login') {
             steps {
-                sh "mvn test"
+                // Login to Docker Hub
+                sh 'echo $DOCKER_HUB_CREDS_PSW | docker login -u $DOCKER_HUB_CREDS_USR --password-stdin'
             }
         }
 
-        stage('Archive Artifacts') {
+        stage('Docker Build') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                // Build Docker image
+                sh "docker build -t ${DOCKER_IMAGE} ."
             }
+        }
+
+        stage('Docker Push') {
+            steps {
+                // Push Docker image to Docker Hub
+                sh "docker push ${DOCKER_IMAGE}"
+            }
+        }
+    }
+
+    post {
+        always {
+            // Logout from Docker Hub
+            sh 'docker logout'
         }
     }
 }
