@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'Maven'
+        'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
     }
     environment {
         DOCKER_HUB_CREDS = credentials('docker-hub-credentials')
