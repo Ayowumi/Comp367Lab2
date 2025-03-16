@@ -4,7 +4,7 @@ pipeline {
         maven 'Maven'
     }
     environment {
-        DOCKER_HUB_CREDS = credentials('docker-hub-credentials')
+        DOCKER_HUB_CREDS_PWD = credentials('docker-hub-credentials')
         DOCKER_IMAGE = "hayowumy/comp367lab2:${BUILD_NUMBER}"
         DOCKER_HUB_CREDS_USR = 'hayowumy'
     }
@@ -27,7 +27,8 @@ pipeline {
         stage('Docker Login') {
             steps {
                 // Login to Docker Hub
-                sh 'echo -n $DOCKER_HUB_CREDS_PSW | docker login -u $DOCKER_HUB_CREDS_USR --password-stdin'
+                sh 'echo -n DOCKER_HUB_CREDS_PWD'
+                sh 'docker login -u $DOCKER_HUB_CREDS_USR -p${DOCKER_HUB_CREDS_PWD}'
 
             }
         }
